@@ -52,7 +52,7 @@ class BookingsService
                 $dateArrivee = new DateTime($bookingDTO['arrival_date']);
                 //On vérifie la date d'arrivée
                 if ($dateArrivee !== false) {
-                    $booking->setDepartureDate($dateArrivee);
+                    $booking->setArrivalDate($dateArrivee);
                 }
                 $bookings[] = $booking;
             }
