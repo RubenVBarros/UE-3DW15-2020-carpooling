@@ -10,6 +10,9 @@ echo $controller->updateBooking();
 
 <p>Mise à jour d'une réservation</p>
 <form method="post" action="bookings_update.php" name ="bookingUpdateForm">
+    <label for="id_booking">Id :</label>
+    <input type="text" name="id_booking">
+    <br />
     <label for="id_user">Id d'utilisateur :</label>
     <input type="text" name="id_user">
     <br />
