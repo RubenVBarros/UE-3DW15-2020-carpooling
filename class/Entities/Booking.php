@@ -17,11 +17,11 @@ class Booking
     /*
         Getters
     */
-    public function getIdbooking(): int
+    public function getIdbooking(): string
     {
         return $this->id_booking;
     }
-    public function getIduser(): User
+    public function getIduser(): string
     {
         return $this->id_user;
     }
@@ -45,11 +45,11 @@ class Booking
     /*
         Setters
     */
-    public function setIdbooking(int $id_booking): void
+    public function setIdbooking(string $id_booking): void
     {
         $this->id_booking = $id_booking;
     }
-    public function setIduser(User $id_user): void
+    public function setIduser(string $id_user): void
     {
         $this->id_user = $id_user;
     }
