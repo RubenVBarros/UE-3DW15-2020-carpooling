@@ -12,7 +12,7 @@ class DataBaseService
     const PORT = '3306';
     const DATABASE_NAME = 'carpooling';
     const MYSQL_USER = 'root';
-    const MYSQL_PASSWORD = 'password';
+    const MYSQL_PASSWORD = ''; //Mon serveur local n'avait pas de mdp du coup je l'enleve pour faire fonctionner
 
     private $connection;
 
@@ -41,7 +41,7 @@ class DataBaseService
             'firstname' => $firstname,
             'lastname' => $lastname,
             'email' => $email,
-            'birthday' => $birthday->format(DateTime::RFC3339),
+            'birthday' => $birthday->format(DateTime::ATOM),
         ];
         $sql = 'INSERT INTO users (firstname, lastname, email, birthday) VALUES (:firstname, :lastname, :email, :birthday)';
         $query = $this->connection->prepare($sql);
@@ -79,7 +79,7 @@ class DataBaseService
             'firstname' => $firstname,
             'lastname' => $lastname,
             'email' => $email,
-            'birthday' => $birthday->format(DateTime::RFC3339),
+            'birthday' => $birthday->format(DateTime::ATOM),
         ];
         $sql = 'UPDATE users SET firstname = :firstname, lastname = :lastname, email = :email, birthday = :birthday WHERE id = :id;';
         $query = $this->connection->prepare($sql);
@@ -99,6 +99,158 @@ class DataBaseService
             'id' => $id,
         ];
         $sql = 'DELETE FROM users WHERE id = :id;';
+        $query = $this->connection->prepare($sql);
+        $isOk = $query->execute($data);
+
+        return $isOk;
+    }
+
+    /*
+        Adding cars
+    */
+    public function createCars(string $brand, string $color, string $model): bool
+    {
+        $isOk = false;
+
+        $data = [
+            'brand' => $brand,
+            'color' => $color,
+            'model' => $model,
+        ];
+        $sql = 'INSERT INTO cars (brand, color, model) VALUES (:brand, :color, :model)';
+        $query = $this->connection->prepare($sql);
+        $isOk = $query->execute($data);
+
+        return $isOk;
+    }
+
+
+    /*
+        Get a car
+    */
+    public function getCars(): array
+    {
+        $cars = [];
+
+        $sql = 'SELECT * FROM cars';
+        $query = $this->connection->query($sql);
+        $results = $query->fetchAll(PDO::FETCH_ASSOC);
+        if (!empty($results)) {
+            $cars = $results;
+        }
+
+        return $cars;
+    }
+
+    /* 
+        Update cars
+    */
+    public function updateCars(int $id, string $brand, string $color, string $model): bool
+    {
+        $isOk = false;
+
+        $data = [
+            'id' => $id,
+            'brand' => $brand,
+            'color' => $color,
+            'model' => $model,
+        ];
+        $sql = 'UPDATE cars SET brand = :brand, color = :color, model = :model WHERE id = :id;';
+        $query = $this->connection->prepare($sql);
+        $isOk = $query->execute($data);
+
+        return $isOk;
+    }
+
+    /*
+        Delete a car
+    */
+    public function deleteCars(string $id): bool
+    {
+        $isOk = false;
+
+        $data = [
+            'id' => $id,
+        ];
+        $sql = 'DELETE FROM cars WHERE id = :id;';
+        $query = $this->connection->prepare($sql);
+        $isOk = $query->execute($data);
+
+        return $isOk;
+    }
+
+    /*
+        Adding bookings
+        JE VAIS TESTER UN TRUC EN AJOUTANT LISTE DEROULANTE POUR LA RESERVATION SI MARCHE PAS ABANDONNER LE USER ET TOUT
+    */
+    public function createBookings(int $iduser, string $departure_city, string $arrival_city,DateTime $departure_date, DateTime $arrival_date): bool
+    {
+        $isOk = false;
+
+        $data = [
+            'id_user' => $iduser,
+            'departure_city' => $departure_city,
+            'arrival_city' => $arrival_city,
+            'departure_date' => $departure_date->format(DateTime::ATOM),
+            'arrival_date' => $arrival_date->format(DateTime::ATOM),
+        ];
+        $sql = 'INSERT INTO bookings (id_user, departure_city, arrival_city,departure_date, arrival_date) VALUES (:id_user, :departure_city, :arrival_city,:departure_date, :arrival_date)';
+        $query = $this->connection->prepare($sql);
+        $isOk = $query->execute($data);
+
+        return $isOk;
+    }
+
+    /*
+        Get a booking
+    */
+    public function getBookings(): array
+    {
+        $bookings = [];
+
+        $sql = 'SELECT * FROM bookings';
+        $query = $this->connection->query($sql);
+        $results = $query->fetchAll(PDO::FETCH_ASSOC);
+        if (!empty($results)) {
+            $bookings = $results;
+        }
+
+        return $bookings;
+    }
+
+    /* 
+        Update a booking
+    */
+    public function updateBookings(int $idbooking, int $iduser,string $departurecity, string $arrivalcity, DateTime $departuredate, DateTime $arrivaldate): bool
+    {
+        $isOk = false;
+
+        $data = [
+            'id_booking' => $idbooking,
+            'id_user' => $iduser,
+            'departure_city' => $departurecity,
+            'arrival_city' => $arrivalcity,
+            'departure_date' => $departuredate->format(DateTime::ATOM),
+            'arrival_date' => $arrivaldate->format(DateTime::ATOM),
+        ];
+        $sql = 'UPDATE bookings SET id_user = :id_user, departure_city = :departure_city, arrival_city = :arrival_city, departure_date = :departure_date, arrival_date = :arrival_date WHERE id_booking = :id_booking;';
+        $query = $this->connection->prepare($sql);
+        $isOk = $query->execute($data);
+
+        return $isOk;
+    }
+
+    /*
+        Delete a booking
+    */
+    public function deleteBookings(string $id): bool
+    {
+        $isOk = false;
+
+        $data = [
+            'id_booking' => $id,
+        ];
+        $sql = 'DELETE FROM bookings WHERE id_booking = :id_booking;';
         $query = $this->connection->prepare($sql);
         $isOk = $query->execute($data);
 
