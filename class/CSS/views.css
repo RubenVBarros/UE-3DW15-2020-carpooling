@@ -1,0 +1,64 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Space Mono', monospace;
+    color: #3E474F;
+}
+
+form {
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+    text-align: center;
+}
+
+p {
+    margin: 0 0 .85em 0;
+    font-weight: 100;
+    font-size: 30px;
+}
+
+label {
+    width: 100%;
+    height: 50px;
+    user-select: none;
+}
+textarea {
+    margin: 0 0 .85em 0;
+    width: 100%;
+    height: 80px;
+}
+input {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid;
+    padding: 1em 0 .8em;
+    text-align: center;
+    font-size: 18px;
+    font-family: inherit;
+    font-weight: 300;
+    line-height: 1;
+    color: inherit;
+    outline: none;
+    margin: 0 0 .50em 0;
+}
+/* Propriété pour les boutons*/
+#bouton{
+    all: unset;
+    margin-top: 2.4em;
+    background: transparent;
+    border: 2px solid black;
+    padding: 1em 4em;
+    border-radius: 50px;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: 700;
+    position: relative;
+    transition: all 300ms ease;
+}
+#bouton:hover{
+    background-color: black;
+    color: white;
+}

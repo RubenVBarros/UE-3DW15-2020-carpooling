@@ -7,9 +7,11 @@ require '../../../vendor/autoload.php';
 $controller = new UsersController();
 echo $controller->updateUser();
 ?>
+<link rel="stylesheet" href="../../CSS/views.css">
 
-<p>Mise à jour d'un utilisateur</p>
 <form method="post" action="users_update.php" name ="userUpdateForm">
+<p>Mise à jour d'un utilisateur</p>
+
     <label for="id">Id :</label>
     <input type="text" name="id">
     <br />
@@ -25,5 +27,5 @@ echo $controller->updateUser();
     <label for="birthday">Date d'anniversaire au format dd-mm-yyyy :</label>
     <input type="text" name="birthday">
     <br />
-    <input type="submit" value="Modifier l'utilisateur">
+    <input id='bouton' type="submit" value="Modifier l'utilisateur">
 </form>

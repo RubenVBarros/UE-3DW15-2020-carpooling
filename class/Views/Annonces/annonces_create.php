@@ -7,20 +7,23 @@ require '../../../vendor/autoload.php';
 $controller = new AnnoncesController();
 echo $controller->createAnnonce();
 ?>
+<link rel="stylesheet" href="../../CSS/views.css">
 
-<p>Création d'une Annonce</p>
 <form method="post" action="annonces_create.php" name ="annoncesCreateForm">
+<p>Création d'une Annonce</p>
+
     <label for="title">Titre</label>
     <input type="text" name="title">
     <br />
-    <label for="texte">Texte :</label> 
+    <br/>
+
+    <label for="texte">Texte :</label>
     <textarea name="texte"></textarea>
     <br />
-    <!-- <label for="datePubli">Date :</label>
-    <input type="date" name="datePubli"> -->
-    
+    <br />
+
     <label for="datePubli">Date de publication au format dd-mm-yyyy:</label>
     <input type="text" name="datePubli">
     <br />
-    <input type="submit" value="Créer une annonce">
+    <input id ='bouton' type="submit" value="Créer une annonce">
 </form>

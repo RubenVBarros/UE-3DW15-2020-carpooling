@@ -7,9 +7,12 @@ require '../../../vendor/autoload.php';
 $controller = new BookingsController();
 echo $controller->createBooking();
 ?>
+<link rel="stylesheet" href="../../CSS/views.css">
 
-<p>Création d'une réservation</p>
+
 <form method="post" action="bookings_create.php" name ="bookingsCreateForm">
+<p>Création d'une réservation</p>
+
     <label for="id_user">Id d'utilisateur</label>
     <input type="text" name="id_user">
     <br />
@@ -25,5 +28,5 @@ echo $controller->createBooking();
     <label for="arrival_date">Date d'arrivée au format dd-mm-yyyy:</label>
     <input type="text" name="arrival_date">
     <br />
-    <input type="submit" value="Créer une réservation">
+    <input id='bouton' type="submit" value="Créer une réservation">
 </form>
