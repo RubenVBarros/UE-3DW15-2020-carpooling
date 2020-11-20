@@ -8,22 +8,28 @@ $controller = new AnnoncesController();
 echo $controller->updateAnnonce();
 ?>
 
-<p>Création d'une Annonce</p>
+<link rel="stylesheet" href="../../CSS/views.css">
+
 <form method="post" action="annonces_update.php" name ="annoncesUpdateForm">
+<p>Modification d'une Annonce</p>
+
     <label for="id">Id :</label>
     <input type="text" name="id">
-    <br>
+    <br />
+    <br />
+
     <label for="title">Titre : </label>
     <input type="text" name="title">
     <br />
+    <br />
+
     <label for="texte">Texte :</label> 
     <textarea name="texte"></textarea>
     <br />
-    <!-- <label for="datePubli">Date :</label>
-    <input type="date" name="datePubli"> -->
+    <br />
     
     <label for="datePubli"> Date de publication au format dd-mm-yyyy:</label>
     <input type="text" name="datePubli">
     <br />
-    <input type="submit" value="Modifier une annonce">
+    <input id='bouton' type="submit" value="Modifier une annonce">
 </form>

@@ -8,10 +8,13 @@ $controller = new AnnonceCommentsController;
 echo $controller->deleteAnnonceComments();
 ?>
 
-<p>Supression d'un commentaire d'une annonce</p>
+<link rel="stylesheet" href="../../CSS/views.css">
+
 <form method="post" action="annoncesComments_delete.php" name ="annoncesCommentsDeleteForm">
+<p>Supression d'un commentaire d'une annonce</p>
+
     <label for="id">Id :</label>
     <input type="text" name="id">
     <br />
-    <input type="submit" value="Supprimer un commentaire d'une annonce">
+    <input id = 'bouton' type="submit" value="Supprimer un commentaire d'une annonce">
 </form>

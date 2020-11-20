@@ -7,11 +7,13 @@ require '../../../vendor/autoload.php';
 $controller = new CarsController();
 echo $controller->deleteCars();
 ?>
+<link rel="stylesheet" href="../../CSS/views.css">
 
-<p>Supression d'une voiture</p>
 <form method="post" action="cars_delete.php" name ="carDeleteForm">
+<p>Supression d'une voiture</p>
+
     <label for="id">Id :</label>
     <input type="text" name="id">
     <br />
-    <input type="submit" value="Supprimer une voiture">
+    <input id='bouton' type="submit" value="Supprimer une voiture">
 </form>

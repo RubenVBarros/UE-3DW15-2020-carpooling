@@ -7,9 +7,10 @@ require '../../../vendor/autoload.php';
 $controller = new CarsController();
 echo $controller->createCars();
 ?>
+<link rel="stylesheet" href="../../CSS/views.css">
 
-<p>Création d'une voiture</p>
 <form method="post" action="cars_create.php" name ="carsCreateForm">
+<p>Création d'une voiture</p>
     <label for="brand">Marque</label>
     <input type="text" name="brand">
     <br />
@@ -19,5 +20,5 @@ echo $controller->createCars();
     <label for="model">Modèle :</label>
     <input type="text" name="model">
     <br />
-    <input type="submit" value="Créer une voiture">
+    <input id='bouton' type="submit" value="Créer une voiture">
 </form>
