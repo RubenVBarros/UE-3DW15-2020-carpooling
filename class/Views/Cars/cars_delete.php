@@ -2,7 +2,7 @@
 
 use App\Controllers\CarsController;
 
-require __DIR__ . '/vendor/autoload.php';
+require '../../../vendor/autoload.php';
 
 $controller = new CarsController();
 echo $controller->deleteCars();

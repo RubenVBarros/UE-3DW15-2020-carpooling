@@ -28,3 +28,11 @@ CREATE TABLE `bookings` (
   `arrival_date` datetime NOT NULL,
   PRIMARY KEY (`id_booking`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `annonces` (
+  `id` int AUTO_INCREMENT NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `texte` varchar(255) NOT NULL,
+  `datePubli` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

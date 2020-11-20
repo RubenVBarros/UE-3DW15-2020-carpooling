@@ -181,7 +181,6 @@ class DataBaseService
 
     /*
         Adding bookings
-        JE VAIS TESTER UN TRUC EN AJOUTANT LISTE DEROULANTE POUR LA RESERVATION SI MARCHE PAS ABANDONNER LE USER ET TOUT
     */
     public function createBookings(int $iduser, string $departure_city, string $arrival_city,DateTime $departure_date, DateTime $arrival_date): bool
     {
@@ -271,7 +270,7 @@ class DataBaseService
             'publi' => $publi->format("Y-m-d")
         ];
 
-        $sql = 'INSERT INTO annonce (title, texte, datePubli) VALUES (:title, :texte, :publi)';
+        $sql = 'INSERT INTO annonce (title, texte, datePubli) VALUES (:title, :texte, :datePubli)';
         $query = $this->connection->prepare($sql);
         
         $isOk = $query->execute($data);
@@ -310,7 +309,7 @@ class DataBaseService
             'publi' => $publi->format("Y-m-d")
         ];
 
-        $sql = 'UPDATE annonce SET title = :title, texte = :texte, datePubli = :publi WHERE id = :id;';
+        $sql = 'UPDATE annonce SET title = :title, texte = :texte, datePubli = :datePubli WHERE id = :id;';
         $query = $this->connection->prepare($sql);
         $isOk = $query->execute($data);
 
