@@ -267,7 +267,7 @@ class DataBaseService
         $data = [
             'title' => $title,
             'texte' => $text,
-            'publi' => $publi->format("Y-m-d")
+            'datePubli' => $publi->format("Y-m-d")
         ];
 
         $sql = 'INSERT INTO annonce (title, texte, datePubli) VALUES (:title, :texte, :datePubli)';
@@ -306,7 +306,7 @@ class DataBaseService
             'id' => $id,
             'title' => $title,
             'texte' => $text,
-            'publi' => $publi->format("Y-m-d")
+            'datePubli' => $publi->format("Y-m-d")
         ];
 
         $sql = 'UPDATE annonce SET title = :title, texte = :texte, datePubli = :datePubli WHERE id = :id;';
