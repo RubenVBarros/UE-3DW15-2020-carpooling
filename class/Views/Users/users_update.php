@@ -1,11 +1,15 @@
 <?php
 
 use App\Controllers\UsersController;
+use App\Services\CarsService;
 
 require '../../../vendor/autoload.php';
 
 $controller = new UsersController();
 echo $controller->updateUser();
+
+$carsService = new CarsService();
+$cars = $carsService->getCars();
 ?>
 <link rel="stylesheet" href="../../CSS/views.css">
 

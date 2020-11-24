@@ -35,17 +35,21 @@ class Car
     public function setId(string $id): void
     {
         $this->id = $id;
+
     }
     public function setBrand(string $brand): void
     {
         $this->brand = $brand;
+
     }
     public function setColor(string $color): void
     {
         $this->color = $color;
+
     }
     public function setModel(string $model): void
     {
         $this->model = $model;
+
     }
 }

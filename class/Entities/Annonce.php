@@ -8,6 +8,7 @@ class Annonce
     private $title;
     private $text;
     private $publi;
+    private $users;
 
     /**
      * Get the value of publi
@@ -87,5 +88,15 @@ class Annonce
         $this->id = $id;
 
         return $this;
+    }
+
+    //Getters et setter pour le user
+    public function getUsers(): array 
+    {
+        return $this->users;
+    }
+    public function setUsers(array $users)
+    {
+        $this->users = $users;
     }
 }
