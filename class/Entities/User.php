@@ -14,6 +14,7 @@ class User
     private $cars;
     private $bookings;
     private $annonce;
+    private $comments;
 
 
     public function getId(): string
@@ -67,7 +68,7 @@ class User
     }
 
     /*
-        Getter et Setters pour les relations avec Voiture,Annonce et Réservations
+        Getter et Setters pour les relations avec Voiture,Annonce, Commentaire d'annonce et Réservations
     */
 
     public function getCars(): array 
@@ -93,5 +94,17 @@ class User
     public function setAnnonce(array $annonce)
     {
         $this->annonce = $annonce;
+    }
+    
+    public function getComments()
+    {
+        return $this->comments;
+    }
+    
+    public function setComments($comments)
+    {
+        $this->comments = $comments;
+
+        return $this;
     }
 }

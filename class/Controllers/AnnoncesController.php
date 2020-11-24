@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Entities\User;
 use App\Services\AnnoncesService;
 
 class AnnoncesController
@@ -14,10 +15,13 @@ class AnnoncesController
         $html = '';
 
         // If the form have been submitted :
-        if (isset($_POST['title']) &&
+        if (
+            isset($_POST['title']) &&
             isset($_POST['texte']) &&
-            isset($_POST['datePubli']) &&
-            isset($_POST['users'])) {
+            isset($_POST['users']) &&
+            isset($_POST['booking']) &&
+            isset($_POST['cars'])
+        ) {
             // Create the annonce :
 
             $annoncesService = new AnnoncesService();
@@ -25,16 +29,13 @@ class AnnoncesController
                 null,
                 $_POST['title'],
                 $_POST['texte'],
-                $_POST['datePubli']
+                $_POST['booking'],
+                $_POST['cars']
             );
             //Create the annonce-users relation
-            $isOk = true;
-            if(!empty($_POST['users']))
-            {
-                foreach($_POST['users'] as $idUser)
-                {
-                    $isOk = $annoncesService->setAnnonceUsers($idAnnonce,$idUser);
-                }
+            if (!empty($_POST['users'])) {
+                $idUser = $_POST['users'];
+                $isOk = $annoncesService->setAnnonceUsers($idAnnonce, $idUser);
             }
             if ($idAnnonce && $isOk) {
                 $html = 'Annonce créé avec succès.';
@@ -51,28 +52,65 @@ class AnnoncesController
     public function getAnnonces(): string
     {
         $html = '';
-
         // Get all Annonces :
         $annoncesService = new AnnoncesService();
         $annonces = $annoncesService->getAnnonces();
 
+        $html = '
+        <table>
+        <thead>
+            <tr>
+                <td>Numero Annonce</td>                
+                <td>Titre</td>                
+                <td>Contenu</td>                
+                <td>Date de publication d\'annonce</td>                
+                <td>Ville de Départ</td>                
+                <td>Ville d\'arrivée</td>                
+                <td>Date de départ </td>                
+                <td>Date d\'arrivée</td>                
+                <td>Voiture</td>                
+            </tr>
+        </thead>
+        <tbody>';
         // Get html :
         foreach ($annonces as $annonce) {
-            $users = '';
-            if(!empty($annonce->getUsers()))
-            {
-                foreach($annonce->getUsers() as $user)
-                {
-                    $users .= $user->getFirstname() . ' ' . $user->getLastname() . ' ';
-                }
+            $html .= '
+            <tr>
+                <td>' . $annonce->getId() . '</td>
+                <td>' . $annonce->getTitle() . '</td>
+                <td>' . $annonce->getText() . '</td>
+                <td>' . $annonce->getPubli()  . '</td>
+            ';
+
+            $annoncesBooking = $annoncesService->getAnnonceBookings( $annonce->getId() );
+            foreach($annoncesBooking as $annonceBooking){
+                $date_departure = date_create($annonceBooking->getBooking()['departure_date']);
+                $date_departure = date_format($date_departure, 'd/m/Y');
+                $date_arrival = date_create($annonceBooking->getBooking()['arrival_date']);
+                $date_arrival = date_format($date_arrival, "d/m/Y");
+                $html .='
+                
+                <td>' . $annonceBooking->getBooking()['departure_city'] . '</td>
+                <td>' . $annonceBooking->getBooking()['arrival_city'] . '</td>
+                <td>' . $date_departure . '</td>
+                <td>' . $date_arrival. '</td>
+                ';
             }
-            $html .=
-                '#' . $annonce->getId() . ' ' .
-                $annonce->getTitle() . ' ' .
-                $annonce->getText() . ' ' .
-                $annonce->getPubli() . ' ' . 
-                $users . '<br />';
+
+            
+            $annoncesCars = $annoncesService->getAnnonceCars( $annonce->getId() );
+            foreach($annoncesCars as $annonceCars){
+                $html .='
+                
+                <td>' . $annonceCars->getCars()['brand'] . '</td>
+                <td>' . $annonceCars->getCars()['model'] . '</td>
+                ';
+            }
+            
+            $html .= '</tr>';
         }
+
+        $html .= '</tbody></table>';
 
         return $html;
     }
@@ -85,10 +123,12 @@ class AnnoncesController
         $html = '';
 
         // If the form have been submitted :
-        if (isset($_POST['id']) &&
+        if (
+            isset($_POST['id']) &&
             isset($_POST['title']) &&
             isset($_POST['texte']) &&
-            isset($_POST['datePubli'])) {
+            isset($_POST['datePubli'])
+        ) {
             // Update the car :
             $annoncesService = new AnnoncesService();
             $isOk = $annoncesService->setAnnonce(

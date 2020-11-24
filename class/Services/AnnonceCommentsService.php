@@ -29,22 +29,25 @@ class AnnonceCommentsService
      */
     public function getAnnonceComments(): array
     {
-        $annonces = [];
+        $comments = [];
 
         $dataBaseService = new DataBaseService();
-        $annoncesDTO = $dataBaseService->getAnnonceComments();
-        if (!empty($annoncesDTO)) {
-            foreach ($annoncesDTO as $annonceDTO) {
-                $annonce = new AnnonceComments();
-                $annonce->setId($annonceDTO['id']);
-                $annonce->setIdAnnonce($annonceDTO['idAnnonce']);
-                $annonce->setIdUser($annonceDTO['idUser']);
-                $annonce->setComment($annonceDTO['comments']);
-                $annonces[] = $annonce;
+        $commentsDTO = $dataBaseService->getAnnonceComments();
+        if (!empty($commentsDTO)) {
+            foreach ($commentsDTO as $commentDTO) {
+                $comment = new AnnonceComments();
+                $comment->setId($commentDTO['id']);
+                $comment->setComment($commentDTO['comments']);
+
+                
+                
+                $comment->setIdAnnonce($commentDTO['idAnnonce']);
+                $comment->setIdUser($commentDTO['idUser']);
+                $comments[] = $comment;
             }
         }
 
-        return $annonces;
+        return $comments;
     }
 
     /**

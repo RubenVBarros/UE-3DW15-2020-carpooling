@@ -80,3 +80,51 @@ CREATE TABLE users_annonce (
 INSERT INTO `users_annonce` (`id_users`, `id_annonce`) VALUES
 (1, 1),
 (1, 2);
+
+CREATE TABLE comments(
+    id INT AUTO_INCREMENT NOT NULL,
+    comments VARCHAR(255),
+    date DATETIME NOT NULL
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO comments VALUES ()
+
+CREATE TABLE user_comment(
+    id_user INT NOT NULL,
+    id_comment INT NOT NULL,
+    PRIMARY KEY(id_user, id_comment),
+    FOREIGN KEY (id_comment) REFERENCES comments(id),
+    FOREIGN KEY (id_user) REFERENCES users(id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO user_comment VALUES ()
+
+CREATE TABLE annonce_comment(
+    id_annonce INT NOT NULL,
+    id_comment INT NOT NULL,
+    PRIMARY KEY(id_annonce, id_comment),
+    FOREIGN KEY (id_comment) REFERENCES comments(id),
+    FOREIGN KEY (id_annonce) REFERENCES annonces(id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO annonce_comment VALUES ()
+
+CREATE TABLE annonce_booking(
+    id_annonce INT NOT NULL,
+    id_booking INT NOT NULL,
+    PRIMARY KEY(id_annonce, id_booking),
+    FOREIGN KEY (id_booking) REFERENCES bookings(id_booking),
+    FOREIGN KEY (id_annonce) REFERENCES annonces(id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO annonce_booking VALUES ()
+
+CREATE TABLE annonce_cars(
+    id_annonce INT NOT NULL,
+    id_cars INT NOT NULL,
+    PRIMARY KEY(id_annonce, id_cars),
+    FOREIGN KEY (id_cars) REFERENCES cars(id),
+    FOREIGN KEY (id_annonce) REFERENCES annonces(id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO annonce_cars VALUES ()

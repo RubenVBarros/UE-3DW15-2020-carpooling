@@ -46,7 +46,7 @@ class DataBaseService
         $sql = 'INSERT INTO users (firstname, lastname, email, birthday) VALUES (:firstname, :lastname, :email, :birthday)';
         $query = $this->connection->prepare($sql);
         $isOk = $query->execute($data);
-        if($isOk){
+        if ($isOk) {
             $userId = $this->connection->lastInsertId();
         }
 
@@ -185,7 +185,7 @@ class DataBaseService
     /*
         Adding bookings
     */
-    public function createBookings(int $iduser, string $departure_city, string $arrival_city,DateTime $departure_date, DateTime $arrival_date): bool
+    public function createBookings(int $iduser, string $departure_city, string $arrival_city, DateTime $departure_date, DateTime $arrival_date): bool
     {
         $isOk = false;
 
@@ -223,7 +223,7 @@ class DataBaseService
     /* 
         Update a booking
     */
-    public function updateBookings(int $idbooking, int $iduser,string $departurecity, string $arrivalcity, DateTime $departuredate, DateTime $arrivaldate): bool
+    public function updateBookings(int $idbooking, int $iduser, string $departurecity, string $arrivalcity, DateTime $departuredate, DateTime $arrivaldate): bool
     {
         $isOk = false;
 
@@ -263,24 +263,28 @@ class DataBaseService
     /**
      * Create an Annonce
      */
-    public function createAnnonce(string $title, string $text, DateTime $publi): string
+    public function createAnnonce(string $title, string $text, int $idBooking, int $idCar): int
     {
-        $annonceId = '';
+        $idAnnonce = 0;
 
         $data = [
             'title' => $title,
             'texte' => $text,
-            'datePubli' => $publi->format("Y-m-d")
+            'datePubli' => date("Y-m-d H:i:s")
         ];
 
-        $sql = 'INSERT INTO annonce (title, texte, datePubli) VALUES (:title, :texte, :datePubli)';
+        $sql = 'INSERT INTO annonces (title, texte, datePubli) VALUES (:title, :texte, :datePubli)';
         $query = $this->connection->prepare($sql);
         $isOk = $query->execute($data);
-        if($isOk){
-            $annonceId = $this->connection->lastInsertId();
-        }
 
-        return $annonceId;
+
+
+        $idAnnonce = $this->connection->lastInsertId();
+
+        $this->setAnnonceBooking($idAnnonce, $idBooking);
+        $this->setAnnonceCars($idAnnonce, $idCar);
+
+        return $idAnnonce;
     }
 
     /**
@@ -290,7 +294,7 @@ class DataBaseService
     {
         $users = [];
 
-        $sql = 'SELECT * FROM annonce';
+        $sql = 'SELECT * FROM annonces';
         $query = $this->connection->query($sql);
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
         if (!empty($results)) {
@@ -303,7 +307,7 @@ class DataBaseService
     /**
      * Update an annonce.
      */
-    public function updateAnnonce(int $id, string $title, string $text, DateTime $publi): bool
+    public function updateAnnonce(int $id, string $title, string $text): bool
     {
         $isOk = false;
 
@@ -311,10 +315,10 @@ class DataBaseService
             'id' => $id,
             'title' => $title,
             'texte' => $text,
-            'datePubli' => $publi->format("Y-m-d")
+            'datePubli' => date("Y-m-d H:i:s")
         ];
 
-        $sql = 'UPDATE annonce SET title = :title, texte = :texte, datePubli = :datePubli WHERE id = :id;';
+        $sql = 'UPDATE annonces SET title = :title, texte = :texte, datePubli = :datePubli WHERE id = :id;';
         $query = $this->connection->prepare($sql);
         $isOk = $query->execute($data);
 
@@ -331,13 +335,13 @@ class DataBaseService
         $data = [
             'id' => $id,
         ];
-        $sql = 'DELETE FROM annonce WHERE id = :id;';
+        $sql = 'DELETE FROM annonces WHERE id = :id;';
         $query = $this->connection->prepare($sql);
         $isOk = $query->execute($data);
 
         return $isOk;
     }
-    
+
     /**
      * Create an Annonce
      */
@@ -345,16 +349,19 @@ class DataBaseService
     {
         $isOk = false;
 
-        $data = [
-            'idAnnonce' => $idAnnonce,
-            'idUser' => $idUser,
-            'comment' => $comment
+        $dataComment = [
+            'comment' => $comment,
+            'date' => date("Y-m-d H:i:s")
         ];
 
-        $sql = 'INSERT INTO annoncecomments (idAnnonce, idUser, comments) VALUES (:idAnnonce, :idUser, :comment)';
+        $sql = 'INSERT INTO comments (comments, date) VALUES (:comment, :date)';
         $query = $this->connection->prepare($sql);
-        
-        $isOk = $query->execute($data);
+        $isOk = $query->execute($dataComment);
+
+        $idComment = $this->connection->lastInsertId();
+
+        $this->setCommentAnnonce($idAnnonce, $idComment);
+        $this->setCommentUser($idUser, $idComment);
 
         return $isOk;
     }
@@ -366,7 +373,7 @@ class DataBaseService
     {
         $users = [];
 
-        $sql = 'SELECT * FROM annoncecomments';
+        $sql = 'SELECT * FROM comments';
         $query = $this->connection->query($sql);
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
         if (!empty($results)) {
@@ -390,7 +397,7 @@ class DataBaseService
             'comment' => $comment
         ];
 
-        $sql = 'UPDATE annoncecomments SET idAnnonce = :idAnnonce, idUser = :idUser, comments = :comment WHERE id = :id';
+        $sql = 'UPDATE comments SET idAnnonce = :idAnnonce, idUser = :idUser, comments = :comment WHERE id = :id';
         $query = $this->connection->prepare($sql);
         $isOk = $query->execute($data);
 
@@ -408,7 +415,7 @@ class DataBaseService
             'id' => $id,
         ];
 
-        $sql = 'DELETE FROM annoncecomments WHERE id = :id;';
+        $sql = 'DELETE FROM comments WHERE id = :id;';
         $query = $this->connection->prepare($sql);
         $isOk = $query->execute($data);
 
@@ -485,7 +492,7 @@ class DataBaseService
         ];
         $sql = '
             SELECT a.*
-            FROM annonce as a
+            FROM annonces as a
             LEFT JOIN users_annonce as ua ON ua.id_annonce = a.id
             WHERE ua.id_users = :id_users';
         $query = $this->connection->prepare($sql);
@@ -538,5 +545,155 @@ class DataBaseService
             $annonceUsers = $results;
         }
         return $annonceUsers;
+    }
+
+    public function setCommentAnnonce($idAnnonce, $idComment): bool
+    {
+        $isOk = false;
+
+
+        $data = [
+            'idAnnonce' => $idAnnonce,
+            'idComment' => $idComment
+        ];
+
+        $sql = 'INSERT INTO annonce_comment VALUES (:idAnnonce, :idComment)';
+        $query = $this->connection->prepare($sql);
+        $isOk = $query->execute($data);
+
+        return $isOk;
+    }
+
+    public function getCommentAnnonce($idAnnonce): array
+    {
+        $annonceComments = [];
+
+        $data = [
+            'id_annonce' => $idAnnonce,
+        ];
+        $sql = '
+            SELECT c.*
+            FROM comments as c
+            LEFT JOIN annonce_comment ac ON ac.id_comment = c.id
+            WHERE ac.id_annonce = :id_annonce';
+        $query = $this->connection->prepare($sql);
+        $query->execute($data);
+        $results = $query->fetchAll(PDO::FETCH_ASSOC);
+        if (!empty($results)) {
+            $annonceComments = $results;
+        }
+        return $annonceComments;
+    }
+
+    public function setCommentUser($idUser, $idComment): bool
+    {
+        $isOk = false;
+
+
+        $data = [
+            'idUser' => $idUser,
+            'idComment' => $idComment
+        ];
+
+        $sql = 'INSERT INTO user_comment VALUES (:idUser, :idComment)';
+        $query = $this->connection->prepare($sql);
+        $isOk = $query->execute($data);
+
+        return $isOk;
+    }
+    public function getCommentUser($idUser): array
+    {
+        $annonceComments = [];
+
+        $data = [
+            'id_user' => $idUser,
+        ];
+        $sql = '
+            SELECT c.*
+            FROM comments as c
+            LEFT JOIN user_comment uc ON uc.id_comment = c.id
+            WHERE uc.id_user = :id_user';
+        $query = $this->connection->prepare($sql);
+        $query->execute($data);
+        $results = $query->fetchAll(PDO::FETCH_ASSOC);
+        if (!empty($results)) {
+            $annonceComments = $results;
+        }
+        return $annonceComments;
+    }
+
+    public function setAnnonceCars($idUser, $idComment): bool
+    {
+        $isOk = false;
+
+
+        $data = [
+            'idUser' => $idUser,
+            'idComment' => $idComment
+        ];
+
+        $sql = 'INSERT INTO annonce_cars VALUES (:idUser, :idComment)';
+        $query = $this->connection->prepare($sql);
+        $isOk = $query->execute($data);
+
+        return $isOk;
+    }
+    public function getAnnonceCars($idAnnonce): array
+    {
+        $annonceComments = [];
+
+        $data = [
+            'id_annonce' => $idAnnonce,
+        ];
+        $sql = '
+            SELECT c.*
+            FROM cars as c
+            LEFT JOIN annonce_cars ac ON ac.id_cars = c.id
+            WHERE ac.id_annonce = :id_annonce';
+        $query = $this->connection->prepare($sql);
+        $query->execute($data);
+        $results = $query->fetchAll(PDO::FETCH_ASSOC);
+        if (!empty($results)) {
+            $annonceComments = $results;
+        }
+        return $annonceComments;
+    }
+
+    public function setAnnonceBooking($idAnnonce, $idBooking): bool
+    {
+        $isOk = false;
+
+
+        $data = [
+            'idAnnonce' => $idAnnonce,
+            'idBooking' => $idBooking
+        ];
+
+        $sql = 'INSERT INTO annonce_booking VALUES (:idAnnonce, :idBooking)';
+        $query = $this->connection->prepare($sql);
+        $isOk = $query->execute($data);
+
+        return $isOk;
+    }
+    public function getAnnonceBooking($idAnnonce): array
+    {
+        $annonceComments = [];
+
+        $data = [
+            'id_annonce' => $idAnnonce,
+        ];
+        $sql = '
+            SELECT b.*
+            FROM bookings as b
+            LEFT JOIN annonce_booking ab ON ab.id_booking = b.id_booking
+            WHERE ab.id_annonce = :id_annonce';
+        $query = $this->connection->prepare($sql);
+        $query->execute($data);
+        $results = $query->fetchAll(PDO::FETCH_ASSOC);
+        if (!empty($results)) {
+            $annonceComments = $results;
+        }
+
+        return $annonceComments;
     }
 }
