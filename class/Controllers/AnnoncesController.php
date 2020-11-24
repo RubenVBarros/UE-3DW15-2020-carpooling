@@ -12,28 +12,36 @@ class AnnoncesController
     public function createAnnonce(): string
     {
         $html = '';
-        $isOk = false;
 
         // If the form have been submitted :
         if (isset($_POST['title']) &&
             isset($_POST['texte']) &&
-            isset($_POST['datePubli'])) {
+            isset($_POST['datePubli']) &&
+            isset($_POST['users'])) {
             // Create the annonce :
 
             $annoncesService = new AnnoncesService();
-            $isOk = $annoncesService->setAnnonce(
+            $idAnnonce = $annoncesService->setAnnonce(
                 null,
                 $_POST['title'],
                 $_POST['texte'],
                 $_POST['datePubli']
             );
-            if ($isOk) {
+            //Create the annonce-users relation
+            $isOk = true;
+            if(!empty($_POST['users']))
+            {
+                foreach($_POST['users'] as $idUser)
+                {
+                    $isOk = $annoncesService->setAnnonceUsers($idAnnonce,$idUser);
+                }
+            }
+            if ($idAnnonce && $isOk) {
                 $html = 'Annonce créé avec succès.';
             } else {
                 $html = "Erreur lors de la création de l'annonce.";
             }
         }
-
         return $html;
     }
 
@@ -50,11 +58,20 @@ class AnnoncesController
 
         // Get html :
         foreach ($annonces as $annonce) {
+            $users = '';
+            if(!empty($annonce->getUsers()))
+            {
+                foreach($annonce->getUsers() as $user)
+                {
+                    $users .= $user->getFirstname() . ' ' . $user->getLastname() . ' ';
+                }
+            }
             $html .=
                 '#' . $annonce->getId() . ' ' .
                 $annonce->getTitle() . ' ' .
                 $annonce->getText() . ' ' .
-                $annonce->getPubli() . ' ' . '<br />';
+                $annonce->getPubli() . ' ' . 
+                $users . '<br />';
         }
 
         return $html;

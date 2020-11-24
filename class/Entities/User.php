@@ -11,6 +11,10 @@ class User
     private $lastname;
     private $email;
     private $birthday;
+    private $cars;
+    private $bookings;
+    private $annonce;
+
 
     public function getId(): string
     {
@@ -31,7 +35,7 @@ class User
     {
         $this->firstname = $firstname;
     }
-
+ 
     public function getLastname(): string
     {
         return $this->lastname;
@@ -60,5 +64,34 @@ class User
     public function setBirthday(DateTime $birthday): void
     {
         $this->birthday = $birthday;
+    }
+
+    /*
+        Getter et Setters pour les relations avec Voiture,Annonce et Réservations
+    */
+
+    public function getCars(): array 
+    {
+        return $this->cars;
+    }
+    public function setCars(array $cars)
+    {
+        $this->cars = $cars;
+    }
+    public function getBookings(): array 
+    {
+        return $this->bookings;
+    }
+    public function setBookings(array $bookings)
+    {
+        $this->bookings = $bookings;
+    }
+    public function getAnnonce(): array 
+    {
+        return $this->annonce;
+    }
+    public function setAnnonce(array $annonce)
+    {
+        $this->annonce = $annonce;
     }
 }

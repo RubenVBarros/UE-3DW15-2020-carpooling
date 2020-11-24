@@ -33,9 +33,9 @@ class DataBaseService
     /**
      * Create an user.
      */
-    public function createUser(string $firstname, string $lastname, string $email, DateTime $birthday): bool
+    public function createUser(string $firstname, string $lastname, string $email, DateTime $birthday): string
     {
-        $isOk = false;
+        $userId = '';
 
         $data = [
             'firstname' => $firstname,
@@ -46,8 +46,11 @@ class DataBaseService
         $sql = 'INSERT INTO users (firstname, lastname, email, birthday) VALUES (:firstname, :lastname, :email, :birthday)';
         $query = $this->connection->prepare($sql);
         $isOk = $query->execute($data);
+        if($isOk){
+            $userId = $this->connection->lastInsertId();
+        }
 
-        return $isOk;
+        return $userId;
     }
 
     /**
@@ -260,9 +263,9 @@ class DataBaseService
     /**
      * Create an Annonce
      */
-    public function createAnnonce(string $title, string $text, DateTime $publi): bool
+    public function createAnnonce(string $title, string $text, DateTime $publi): string
     {
-        $isOk = false;
+        $annonceId = '';
 
         $data = [
             'title' => $title,
@@ -272,10 +275,12 @@ class DataBaseService
 
         $sql = 'INSERT INTO annonce (title, texte, datePubli) VALUES (:title, :texte, :datePubli)';
         $query = $this->connection->prepare($sql);
-        
         $isOk = $query->execute($data);
+        if($isOk){
+            $annonceId = $this->connection->lastInsertId();
+        }
 
-        return $isOk;
+        return $annonceId;
     }
 
     /**
@@ -408,5 +413,130 @@ class DataBaseService
         $isOk = $query->execute($data);
 
         return $isOk;
+    }
+
+    /**
+     * Create relation between an user and his car.
+     */
+    public function setUserCar(string $id_users, string $id_cars): bool
+    {
+        $isOk = false;
+
+        $data = [
+            'id_users' => $id_users,
+            'id_cars' => $id_cars,
+        ];
+
+        $sql = 'INSERT INTO users_cars(id_users, id_cars) VALUES (:id_users, :id_cars)';
+        $query = $this->connection->prepare($sql);
+        $isOk = $query->execute($data);
+
+        return $isOk;
+    }
+
+    public function getUserCars(string $idUser): array
+    {
+        $usersCars = [];
+
+        $data = [
+            'id_users' => $idUser,
+        ];
+        $sql = '
+            SELECT c.*
+            FROM cars as c
+            LEFT JOIN users_cars as uc ON uc.id_cars = c.id
+            WHERE uc.id_users = :id_users';
+        $query = $this->connection->prepare($sql);
+        $query->execute($data);
+        $results = $query->fetchAll(PDO::FETCH_ASSOC);
+        if (!empty($results)) {
+            $usersCars = $results;
+        }
+        return $usersCars;
+    }
+    /**
+     * Create relation between an user and his announce.
+     */
+    public function setUserAnnonce(string $id_users, string $id_annonce): bool
+    {
+        $isOk = false;
+
+        $data = [
+            'id_users' => $id_users,
+            'id_annonce' => $id_annonce,
+        ];
+
+        $sql = 'INSERT INTO users_cars(id_users,id_annonce) VALUES (:id_users, :id_annonce)';
+        $query = $this->connection->prepare($sql);
+        $isOk = $query->execute($data);
+
+        return $isOk;
+    }
+
+    /**
+     * Create relation between an user and his announce.
+     */
+    public function getUserAnnonces(string $idUser): array
+    {
+        $usersAnnonces = [];
+
+        $data = [
+            'id_users' => $idUser,
+        ];
+        $sql = '
+            SELECT a.*
+            FROM annonce as a
+            LEFT JOIN users_annonce as ua ON ua.id_annonce = a.id
+            WHERE ua.id_users = :id_users';
+        $query = $this->connection->prepare($sql);
+        $query->execute($data);
+        $results = $query->fetchAll(PDO::FETCH_ASSOC);
+        if (!empty($results)) {
+            $usersAnnonces = $results;
+        }
+        return $usersAnnonces;
+    }
+
+    /**
+     * Create relation between an user and his announce.
+     */
+    public function setAnnonceUser(string $id_annonce, string $id_users): bool
+    {
+        $isOk = false;
+
+        $data = [
+            'id_users' => $id_users,
+            'id_annonce' => $id_annonce,
+        ];
+
+        $sql = 'INSERT INTO users_annonce(id_users,id_annonce) VALUES (:id_users, :id_annonce)';
+        $query = $this->connection->prepare($sql);
+        $isOk = $query->execute($data);
+
+        return $isOk;
+    }
+
+    /**
+     * Create relation between an user and his announce.
+     */
+    public function getAnnonceUser(string $idAnnonce): array
+    {
+        $annonceUsers = [];
+
+        $data = [
+            'id_annonce' => $idAnnonce,
+        ];
+        $sql = '
+            SELECT u.*
+            FROM users as u
+            LEFT JOIN users_annonce as ua ON ua.id_annonce = a.id
+            WHERE ua.id_users = :id_users';
+        $query = $this->connection->prepare($sql);
+        $query->execute($data);
+        $results = $query->fetchAll(PDO::FETCH_ASSOC);
+        if (!empty($results)) {
+            $annonceUsers = $results;
+        }
+        return $annonceUsers;
     }
 }
