@@ -1,6 +1,8 @@
 <?php
 
 use App\Controllers\AnnoncesController;
+use App\Services\BookingsService;
+use App\Services\CarsService;
 use App\Services\UsersService;
 
 require '../../../vendor/autoload.php';
@@ -10,6 +12,12 @@ echo $controller->createAnnonce();
 
 $usersService = new UsersService();
 $users = $usersService->getUsers();
+
+$bookingService = new BookingsService();
+$bookings = $bookingService->getBookings();
+
+$carsService = new CarsService();
+$cars = $carsService->getCars();
 ?>
 <link rel="stylesheet" href="../../CSS/views.css">
 
@@ -24,19 +32,32 @@ $users = $usersService->getUsers();
     <label for="texte">Texte :</label>
     <textarea name="texte"></textarea>
     <br />
-    <br />
+    <!-- <br />
 
     <label for="datePubli">Date de publication au format dd-mm-yyyy:</label>
     <input type="text" name="datePubli">
-    <br />
+    <br /> -->
 
     <label for="users">Utilisateurs :</label>
-    <?php foreach ($users as $user): ?>
-    <br/>
-    <?php $userName = $user->getFirstname() . ' ' . $user->getLastName() . ' ' ?>
-    <br />
-    <input type="radio" name="users[]" value="<?php echo $user->getId();?>"> <?php echo $userName; ?>
-    <br />
-    <?php endforeach; ?>
+    <select name="users">
+    <?php foreach ($users as $user){ ?>
+        <option value=<?php echo $user->getId();?>><?php echo $user->getFirstname() . ' ' . $user->getLastName() . ' ' ?></option>
+    <?php } ?>
+    </select>
+    <br>
+    <label for="booking">Reservations :</label>
+    <select name="booking">
+    <?php foreach ($bookings as $booking){ ?>
+        <option value=<?php echo $booking->getIdbooking();?>><?php echo $booking->getDepartureCity() . ' -> ' . $booking->getArrivalCity() . ' : ' . date_format($booking->getDepartureDate(), "d/m/Y") . " -> ". date_format($booking->getArrivalDate(), "d/m/Y") ?></option>
+    <?php } ?>
+    </select>
+    <br>
+    <label for="cars">Voitures :</label>
+    <select name="cars">
+    <?php foreach ($cars as $car){ ?>
+        <option value=<?php echo $car->getId();?>><?php echo $car->getBrand() . ' ' . $car->getModel() . ' '. $car->getColor() ?></option>
+    <?php } ?>
+    </select>
+    <br>
     <input id ='bouton' type="submit" value="Créer une annonce">
 </form>

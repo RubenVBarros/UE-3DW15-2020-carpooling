@@ -9,6 +9,8 @@ class Annonce
     private $text;
     private $publi;
     private $users;
+    private $booking;
+    private $cars;
 
     /**
      * Get the value of publi
@@ -98,5 +100,49 @@ class Annonce
     public function setUsers(array $users)
     {
         $this->users = $users;
+    }
+
+    
+
+    /**
+     * Get the value of cars
+     */ 
+    public function getCars()
+    {
+        return $this->cars;
+    }
+
+    /**
+     * Set the value of cars
+     *
+     * @return  self
+     */ 
+    public function setCars($cars)
+    {
+        $this->cars = $cars;
+
+        return $this;
+    }
+
+    
+
+    /**
+     * Get the value of booking
+     */ 
+    public function getBooking()
+    {
+        return $this->booking;
+    }
+
+    /**
+     * Set the value of booking
+     *
+     * @return  self
+     */ 
+    public function setBooking($booking)
+    {
+        $this->booking = $booking;
+
+        return $this;
     }
 }
